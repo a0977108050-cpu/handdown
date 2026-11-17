@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>團購取貨櫃台</title>
+<style>
+:root{--bg:#f1f5f2;--sf:#fff;--ink:#14231b;--mute:#5d6f64;--line:#d5e0d8;--g:#1d6b46;--gi:#fff;--mint:#e0efe6;--tag:#ffd23f;--tagi:#3a2e00;--bad:#c0392b;--badbg:#fbe3df;--warn:#fff1c9;--warni:#6b4e00;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1612;--sf:#17221c;--ink:#e6f0ea;--mute:#95a99d;--line:#2a3b32;--g:#4fbf83;--gi:#07140d;--mint:#1d3226;--tag:#e6b800;--tagi:#1c1500;--bad:#ff8a7a;--badbg:#3a1b17;--warn:#3a2f0a;--warni:#ffd86b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1612;--sf:#17221c;--ink:#e6f0ea;--mute:#95a99d;--line:#2a3b32;--g:#4fbf83;--gi:#07140d;--mint:#1d3226;--tag:#e6b800;--tagi:#1c1500;--bad:#ff8a7a;--badbg:#3a1b17;--warn:#3a2f0a;--warni:#ffd86b;color-scheme:dark}
+*{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:16px/1.55 "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 16px;background:var(--g);color:var(--gi)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--g);z-index:10}
+h1{font-size:20px;margin:0;font-weight:700}
+header nav{display:flex;gap:6px}
+header button{border:0;border-radius:8px;padding:9px 16px;font:inherit;font-weight:600;background:transparent;color:var(--gi);cursor:pointer;opacity:.75}
+header button.on{background:var(--gi);color:var(--g);opacity:1}
+main{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+label{font-weight:600;display:block;margin-bottom:6px}
+#p3{width:100%;max-width:340px;font:700 44px/1.2 inherit;letter-spacing:.4em;text-align:center;padding:10px;border:2px solid var(--g);border-radius:12px;background:var(--sf);color:var(--ink)}
+button{font:inherit}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--tag);outline-offset:2px}
+.hint,.empty{color:var(--mute);padding:18px 0}
+.card{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;text-align:left;background:var(--sf);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:10px;cursor:pointer;color:var(--ink)}
+.card:hover{border-color:var(--g)}
+.card b{font-size:20px}
+.badge{display:inline-block;font-size:13px;padding:2px 8px;border-radius:99px;background:var(--warn);color:var(--warni);margin-left:6px}
+.badge.bad{background:var(--badbg);color:var(--bad)}
+.panel{background:var(--sf);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:14px}
+.panel h2{margin:0 0 4px;font-size:22px}
+.item{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.item .nm{font-weight:600}
+.loc{display:inline-block;margin-left:8px;padding:1px 10px;border-radius:6px;background:var(--tag);color:var(--tagi);font-weight:700}
+.item small,small{color:var(--mute)}
+.item.done{opacity:.5}
+input[type=number]{width:84px;font-size:20px;padding:8px;text-align:center;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.pri{background:var(--g);color:var(--gi);border:0;border-radius:10px;padding:14px 22px;font-weight:700;font-size:18px;cursor:pointer}
+.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer}
+.ghost.warnb{border-color:var(--bad);color:var(--bad)}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:12px 0}
+.sub{display:flex;gap:6px;flex-wrap:wrap;border-bottom:2px solid var(--line);margin-bottom:14px}
+.sub button{border:0;background:transparent;color:var(--mute);padding:10px 14px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+.sub button.on{color:var(--g);border-bottom-color:var(--g)}
+.tw{overflow-x:auto;max-width:100%}
+table{border-collapse:collapse;width:100%;min-width:640px;background:var(--sf)}
+th,td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--line);font-size:15px}
+th{background:var(--mint);font-weight:600}
+textarea{width:100%;min-height:120px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--sf);color:var(--ink);font:14px/1.5 ui-monospace,monospace}
+code{background:var(--mint);padding:1px 6px;border-radius:4px}
+.ok{background:var(--mint);border-radius:12px;padding:20px;margin-top:14px}
+.ok b{font-size:20px}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;text-align:center}
+#toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){#toast{transition:none}}
+td input{width:100%;min-width:74px;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}td input[type=number]{width:72px;min-width:72px;font-size:16px}td input[type=checkbox]{width:22px;height:22px;min-width:0}.fld{display:inline-block;margin:0 14px 8px 0;font-weight:400}.fld input{display:block;width:200px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}h3{margin:18px 0 6px}.bt{color:var(--mute);font-size:13px;margin-left:6px}.xx{text-decoration:line-through;opacity:.55}
+.pin{width:160px;padding:10px;font-size:20px;letter-spacing:.3em;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}.note{background:var(--warn);color:var(--warni);border-radius:10px;padding:10px 14px;margin:10px 0;font-size:15px}.err{background:var(--badbg);color:var(--bad);border-radius:10px;padding:10px 14px;margin:10px 0;font-size:15px}.sht{background:var(--badbg);color:var(--bad);font-weight:600}header nav{flex-wrap:wrap}header .lk{opacity:1;border:1px solid var(--gi)}ul.cl{margin:6px 0;padding-left:20px;font-size:14px}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--sf);color:var(--ink);padding:18px;width:min(720px,94vw);max-height:88vh;overflow:auto}dialog::backdrop{background:rgba(0,0,0,.5)}
+select{padding:9px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}.who{display:flex;gap:8px;align-items:center;font-size:14px}
+</style>
+</head>
+<body>
+<header>
+  <h1>團購取貨櫃台</h1>
+  <nav id="nav"><button id="t-cust" class="on" onclick="go('cust')">顧客查詢</button><button id="t-stf" onclick="go('stf')">取貨登記</button><button id="t-back" onclick="go('back')">後台管理</button><button class="lk" onclick="lockNow()">鎖定為顧客模式</button></nav>
+  <span id="who" class="who"></span>
+  <button id="unl" class="lk" hidden onclick="askPin('unlock')">員工解鎖</button>
+</header>
+<main>
+  <div id="lockbox" hidden></div>
+  <section id="cust">
+    <label for="p3">請輸入電話後 3 碼</label>
+    <input id="p3" inputmode="numeric" maxlength="3" placeholder="123" autocomplete="off" oninput="onP3()">
+    <div id="cres"></div>
+  </section>
+  <section id="stf" hidden>
+    <label for="sq">搜尋姓名、電話或商品</label>
+    <input id="sq" class="pin" style="width:100%;max-width:420px;letter-spacing:0" autocomplete="off" oninput="stfSearch()" placeholder="例：王小明 或 123">
+    <div id="sres"></div>
+  </section>
+  <section id="back" hidden>
+    <nav class="sub" id="sub"></nav>
+    <div id="bk"></div>
+  </section>
+</main>
+<div id="toast" role="status"></div>
+<dialog id="dlg"></dialog>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+/*CORE-START*/
+const DAY=864e5, KEEP=30*DAY, pad=n=>String(n).padStart(2,'0');
+const taipeiDate=(t=Date.now())=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).format(t);
+const rem=i=>i.cancelledAt?0:Math.max(0,i.q-i.p);
+const overdue=(i,today)=>rem(i)>0&&!!i.d&&(today||taipeiDate())>i.d;
+const expired=(i,now)=>(now??Date.now())>=i.at+KEEP;
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const S=x=>String(x??'').trim();
+function normPhone(raw){let s=S(raw);const plus=s.startsWith('+');s=s.replace(/\D/g,'');if((plus&&s.startsWith('886'))||(s.startsWith('886')&&s.length===12))s='0'+s.slice(3);return s}
+function toDate(v){
+  if(typeof v==='number'){if(v>20000&&v<80000){const d=new Date(Math.round((v-25569)*864e5));return d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate())}return null}
+  if(v instanceof Date&&!isNaN(v))return v.getFullYear()+'-'+pad(v.getMonth()+1)+'-'+pad(v.getDate());
+  const m=S(v).match(/^(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);if(!m)return null;const mo=+m[2],da=+m[3];if(mo<1||mo>12||da<1||da>31)return null;return m[1]+'-'+pad(mo)+'-'+pad(da)}
+function hashStr(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36)}
+function parseWindow(v,ctx){const s=S(v).replace(/[～〜]/g,'~');let m=s.match(/(\d{1,2})\s*[\/.月]\s*(\d{1,2})\s*日?\s*(?:[~\-–—]|至|到)\s*(?:(\d{1,2})\s*[\/.月]\s*)?(\d{1,2})\s*日?/),a,b,c,d2;
+  if(m){a=+m[1];b=+m[2];c=m[3]?+m[3]:a;d2=+m[4]}else{m=s.match(/^(\d{1,2})\s*[\/.月]\s*(\d{1,2})\s*日?$/);if(!m)return null;a=+m[1];b=+m[2];c=a;d2=b}
+  if(a<1||a>12||c<1||c>12||b<1||b>31||d2<1||d2>31)return null;
+  const today=(ctx&&ctx.today)||taipeiDate(),tms=Date.parse(today+'T00:00:00Z'),Y=+today.slice(0,4);let y;
+  if(ctx&&ctx.year)y=ctx.year;else{let best=Infinity;[Y-1,Y,Y+1].forEach(yy=>{const dd=Math.abs(Date.UTC(yy,a-1,b)-tms);if(dd<best){best=dd;y=yy}})}
+  const ey=(c<a||(c===a&&d2<b))?y+1:y;return ey+'-'+pad(c)+'-'+pad(d2)}
+function toDue(v,ctx){const t=toDate(v);return t!==null?t:parseWindow(v,ctx)}
+const STORE_RE=/^\s*(.+?)\s*[-－—–]\s*合併提貨總表/;
+function analyze(grid,merges,off,opts){
+  off=off||0;opts=opts||{};const ctx={year:opts.year,today:opts.today};
+  const res={errors:[],warnings:[],rows:[],stores:{},store:'',needStore:false,skipped:{title:0,head:0,other:0}};
+  const E=(r,m)=>res.errors.push({row:r+1+off,msg:m}),W=(r,m)=>res.warnings.push({row:r+1+off,msg:m});
+  let h=-1;for(let r=0;r<Math.min(grid.length,15);r++){const t=(grid[r]||[]).map(S);if(t.some(x=>x.includes('姓名'))&&t.some(x=>x.includes('電話')||x.includes('手機'))){h=r;break}}
+  if(h<0){res.errors.push({row:0,msg:'找不到標題列：前 15 列內需要同時有「姓名」與「電話（或手機）」欄。'});return res}
+  const H=grid[h].map(S),f=(...ks)=>{for(const k of ks){const i=H.findIndex(x=>x.includes(k));if(i>=0)return i}return -1};
+  const C={n:f('姓名'),p:f('電話','手機'),g:f('商品名稱','品名','商品'),v:f('規格'),q:f('數量'),l:f('儲位'),d:f('取貨時間','期限'),b:f('檔期'),s:f('來源'),z:f('溫域'),c:f('條碼'),t:f('備註')};
+  if(C.g<0)res.errors.push({row:h+1+off,msg:'缺少必要欄位「商品名稱」'});
+  if(C.q<0)res.errors.push({row:h+1+off,msg:'缺少必要欄位「數量」'});
+  if(res.errors.length)return res;
+  (merges||[]).forEach(m=>{if(m.r2>m.r1&&m.r1>h)[C.n,C.p,C.l].forEach(c=>{if(c>=0&&c>=m.c1&&c<=m.c2){const v=grid[m.r1][c];for(let r=m.r1;r<=m.r2;r++)if(grid[r]&&S(grid[r][c])==='')grid[r][c]=v}})});
+  const nonEmpty=row=>row.reduce((n,x)=>n+(S(x)!==''?1:0),0),isHead=row=>{let hit=0;H.forEach((x,k)=>{if(x&&S(row[k])===x)hit++});return hit>=3};
+  const kind=[],rst=[];let st='';
+  for(let r=0;r<h;r++){const m=STORE_RE.exec(S((grid[r]||[])[0]));if(m)st=m[1]}
+  for(let r=h+1;r<grid.length;r++){const row=grid[r];rst[r]=st;
+    if(!row||nonEmpty(row)===0){kind[r]='blank';continue}
+    if(nonEmpty(row)<=1){const m=STORE_RE.exec(S(row.find(x=>S(x)!=='')));if(m){st=m[1];rst[r]=st}kind[r]='title';res.skipped.title++;continue}
+    if(isHead(row)){kind[r]='head';res.skipped.head++;continue}
+    kind[r]='data';res.stores[st]=(res.stores[st]||0)+1}
+  const names=Object.keys(res.stores).filter(k=>k);
+  if(names.length>1&&!opts.store){res.needStore=true;return res}
+  const chosen=opts.store||names[0]||'';res.store=chosen;
+  let pn='',pp='';
+  for(let r=h+1;r<grid.length;r++){if(kind[r]!=='data')continue;
+    if(chosen&&rst[r]!==chosen){res.skipped.other++;continue}
+    const row=grid[r];let name=S(row[C.n]),ph=row[C.p],pS=S(ph);
+    if(name===''&&pS===''){name=pn;ph=pp;pS=S(pp)}else{if(pS===''&&name!==''&&name===pn){ph=pp;pS=S(pp)}pn=name;pp=ph}
+    let bad=false;
+    if(name===''){name='（未填姓名）';W(r,'訂購人姓名空白，已用「（未填姓名）」代替')}
+    let phone=normPhone(pS);
+    if((typeof ph==='number'||/^\d+$/.test(pS))&&phone.length===9&&phone[0]==='9'){phone='0'+phone;W(r,'電話缺少開頭的 0，已自動補上')}
+    if(phone.length<8||phone.length>10){E(r,'電話格式異常：'+(pS||'空白'));bad=true}
+    const g=S(row[C.g]),vv=C.v>=0?S(row[C.v]):'';if(!g){E(r,'缺少商品名稱');bad=true}
+    const qraw=row[C.q],q=(qraw===''||qraw==null)?NaN:Number(qraw);if(!Number.isInteger(q)||q<1){E(r,'數量必須是 1 以上的整數：'+(S(qraw)||'空白'));bad=true}
+    let d='';if(C.d>=0&&S(row[C.d])!==''){const t=toDue(row[C.d],ctx);if(t===null){E(r,'取貨時間格式無法判讀：'+S(row[C.d]));bad=true}else d=t}
+    const loc=C.l>=0?S(row[C.l]):'',src=C.s>=0?S(row[C.s]):'',win=(C.d>=0&&typeof row[C.d]==='string')?S(row[C.d]):'';
+    const b=C.b>=0&&S(row[C.b])?S(row[C.b]):[src,win].filter(Boolean).join(' ');
+    if(!loc)W(r,'沒有儲位');if(!d)W(r,'沒有取貨期限');
+    if(!bad)res.rows.push({row:r+1+off,name,phone,n:vv?g+' '+vv:g,q,loc,b,d,z:C.z>=0?S(row[C.z]):'',bc:C.c>=0?S(row[C.c]):'',nt:C.t>=0?S(row[C.t]).replace(/\s*\n\s*/g,' / '):''});
+  }
+  if(!res.rows.length&&!res.errors.length)res.errors.push({row:0,msg:chosen?'「'+chosen+'」沒有任何資料列':'標題列之後沒有任何資料列'});
+  return res}
+const findCust=(db,name,phone)=>db.customers.find(c=>c.name===name&&c.phone===phone);
+function purge(db,now){now=now??Date.now();db.customers.forEach(c=>c.items=c.items.filter(i=>!expired(i,now)));db.customers=db.customers.filter(c=>c.items.length);
+  const ids=new Set(db.customers.flatMap(c=>c.items.map(i=>i.id)));db.events=db.events.filter(e=>ids.has(e.itemId));db.batches=db.batches.filter(b=>b.at+KEEP>now);if(db.audit)db.audit=db.audit.filter(a=>a.at+KEEP>now)}
+function fingerprint(rows,period){return hashStr(JSON.stringify(rows.map(r=>[r.name,r.phone,r.n,r.q,r.b,r.d]))+'|'+S(period))}
+const dupKey=(name,phone,i)=>[name,phone,i.n,i.q,i.b,i.d].join('\u0001');
+function findDups(db,rows,period){const set=new Set();db.customers.forEach(c=>c.items.forEach(i=>set.add(dupKey(c.name,c.phone,i))));
+  return rows.filter(r=>set.has(dupKey(r.name,r.phone,{n:r.n,q:r.q,b:r.b||S(period),d:r.d})))}
+function commitRows(db,rows,meta,now){now=now??Date.now();const bid=uid();
+  rows.forEach(r=>{let c=findCust(db,r.name,r.phone);if(!c){c={id:uid(),name:r.name,phone:r.phone,items:[]};db.customers.push(c)}
+    c.items.push({id:uid(),bid,n:r.n,q:r.q,p:0,loc:r.loc,b:r.b||S(meta.period),d:r.d,z:r.z||'',bc:r.bc||'',nt:r.nt||'',s:false,cancelledAt:null,at:now})});
+  db.batches.push({id:bid,period:S(meta.period),fileName:meta.fileName||'',fp:meta.fp,at:now,rowCount:rows.length});return bid}
+function submitPick(db,entries,now,who){now=now??Date.now();const items=new Map();db.customers.forEach(c=>c.items.forEach(i=>items.set(i.id,i)));
+  const use=entries.filter(e=>e.delta!==0);if(!use.length)return{ok:false,err:'本次交付數量都是 0'};
+  for(const e of entries){const i=items.get(e.itemId);if(!i)return{ok:false,err:'找不到商品'};
+    if(!Number.isInteger(e.delta)||e.delta<0)return{ok:false,err:i.n+'：交付數量必須是 0 以上的整數'};
+    if(e.delta>rem(i))return{ok:false,err:i.n+'：超過剩餘量 '+rem(i)}}
+  use.forEach(e=>{const i=items.get(e.itemId),prev=i.p;i.p+=e.delta;db.events.push({id:uid(),itemId:i.id,prev,delta:e.delta,next:i.p,at:now,who:who||'',kind:'pick'})});return{ok:true}}
+/*CORE-END*/
+/* ===== 介面 ===== */
+const DB_KEY='pk_v2',LOCK_KEY='pk_lock',IDLE=60000;
+let db={customers:[],events:[],batches:[],audit:[],staff:[],cfg:{}},who=null,mode='cust',sub='imp',lock={pin:'',locked:false},busy=false,armed=null,pk=null,ed=null,edId=null,imp=null,rs=null,idleT;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=t=>{const d=new Date(t);return (d.getMonth()+1)+'/'+d.getDate()+' '+pad(d.getHours())+':'+pad(d.getMinutes())};
+const dstr=t=>taipeiDate(t);
+let tt;function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),3200)}
+function save(){try{localStorage.setItem(DB_KEY,JSON.stringify(db))}catch(e){toast('儲存失敗，請確認瀏覽器儲存空間')}}
+function saveLock(){try{localStorage.setItem(LOCK_KEY,JSON.stringify(lock))}catch(e){}}
+function migrate(){let old=[];try{old=JSON.parse(localStorage.getItem('pk_orders_v1')||'[]')}catch(e){}
+  const now=Date.now();old.forEach(o=>{let c=findCust(db,o.name,o.phone);if(!c){c={id:uid(),name:o.name,phone:o.phone,items:[]};db.customers.push(c)}
+    (o.items||[]).forEach(i=>c.items.push({id:uid(),bid:'v1',n:i.n,q:i.q,p:i.p,loc:i.loc||'',b:i.b||'',d:i.d??o.deadline??'',s:false,cancelledAt:i.x?now:null,at:o.doneAt||now}))})}
+function load(){let raw=null;try{raw=JSON.parse(localStorage.getItem(DB_KEY)||'null')}catch(e){}
+  if(raw&&Array.isArray(raw.customers))db={customers:raw.customers,events:raw.events||[],batches:raw.batches||[],audit:raw.audit||[],staff:raw.staff||[],cfg:raw.cfg||{}};else migrate();
+  try{lock=JSON.parse(localStorage.getItem(LOCK_KEY)||'null')||lock}catch(e){}
+  purge(db);save()}
+const pend=c=>c.items.filter(i=>rem(i)>0);
+const allItems=()=>db.customers.flatMap(c=>c.items.map(i=>({c,i})));
+const maskN=n=>n.length<=1?n:n.length===2?n[0]+'○':n[0]+'○'.repeat(n.length-2)+n[n.length-1];
+const tags=i=>(i.z?`<span class="bt">${esc(i.z)}</span>`:'')+(i.b?`<span class="bt">${esc(i.b)}</span>`:'')+(overdue(i)?'<span class="badge bad">逾期</span>':'')+(i.s?'<span class="badge sht">缺貨</span>':'');
+const locTag=i=>`<span class="loc">${esc(i.loc||'—')}</span>`;
+function notice(c){const ps=pend(c);if(!ps.length)return c.name+' 您好，目前沒有待取商品。';
+  return c.name+' 您好，您在本店的團購商品尚有下列待取：\n'+ps.map(i=>'・'+(i.b?'['+i.b+'] ':'')+i.n+' ×'+rem(i)+'　儲位：'+(i.loc||'—')+(i.d?'　期限：'+i.d:'')+(overdue(i)?'（已逾期，請儘速洽門市）':'')+(i.s?'（目前缺貨）':'')).join('\n')+'\n請至門市取貨。'}
+const evTxt=i=>db.events.filter(e=>e.itemId===i.id).map(e=>fmt(e.at)+(e.who?' '+e.who:'')+(e.kind==='pick'?' 取 '+e.delta:e.kind==='cancel'?' 取消':e.kind==='restore'?' 恢復':' 更正 '+(e.delta>0?'+':'')+e.delta)).join('；');
+const doneAt=i=>{const ev=db.events.filter(e=>e.itemId===i.id).map(e=>e.at);return i.cancelledAt||(ev.length?Math.max(...ev):i.at)};
+
+/* ---- 模式切換與鎖定 ---- */
+function go(m){if(lock.locked&&m!=='cust')return;if(m!=='cust'&&!who){askStaff(m);return}mode=m;['cust','stf','back'].forEach(k=>{$(k).hidden=k!==m;$('t-'+k).classList.toggle('on',k===m)});$('lockbox').hidden=true;
+  if(m==='cust')onP3();else if(m==='stf')stfSearch();else renderBack();renderWho()}
+function applyLock(){const L=lock.locked;$('nav').hidden=L;$('unl').hidden=!L;if(L)go('cust');else go(mode)}
+function lockNow(){if(!lock.pin){askPin('set');return}lock.locked=true;who=null;saveLock();applyLock()}
+function askPin(k){const b=$('lockbox');b.hidden=false;b.innerHTML=`<div class="panel"><label for="pinin">${k==='set'?'設定員工 PIN（4–8 位數字），之後離開顧客模式要輸入':'輸入員工 PIN 解鎖'}</label><div class="bar"><input id="pinin" class="pin" type="password" inputmode="numeric" maxlength="8" autocomplete="off"><button class="pri" onclick="pinOk('${k}')">${k==='set'?'設定並鎖定':'解鎖'}</button><button class="ghost" onclick="$('lockbox').hidden=true">取消</button></div><small>這只是現場防誤觸的簡易鎖，不是正式的帳號安全機制。</small></div>`;$('pinin').focus()}
+function pinOk(k){const v=$('pinin').value.replace(/\D/g,'');
+  if(k==='set'){if(v.length<4){toast('PIN 至少 4 位數字');return}lock.pin=v;lock.locked=true;who=null}
+  else{if(v!==lock.pin){toast('PIN 錯誤');return}lock.locked=false}
+  saveLock();$('lockbox').hidden=true;applyLock()}
+
+/* ---- 顧客查詢（唯讀） ---- */
+const HINT='<p class="hint">輸入電話後 3 碼，查詢待取的團購商品。</p>';
+function idle(){clearTimeout(idleT);idleT=setTimeout(()=>{$('p3').value='';$('cres').innerHTML=HINT},IDLE)}
+function onP3(){const el=$('p3'),v=el.value.replace(/\D/g,'');el.value=v;idle();
+  if(v.length<3){$('cres').innerHTML=HINT;return}
+  const l=db.customers.filter(c=>c.phone.endsWith(v)&&pend(c).length);
+  if(!l.length){$('cres').innerHTML='<p class="hint">查無待取資料。可能已取完，或名冊尚未匯入。</p>';return}
+  $('cres').innerHTML='<p class="hint">請確認自己的姓名：</p>'+l.map(c=>`<button class="card" onclick="custShow('${c.id}')"><span><b>${esc(maskN(c.name))}</b>　電話 ${esc(c.phone.slice(0,2))}••••${esc(c.phone.slice(-3))}</span><span>待取 ${pend(c).length} 項</span></button>`).join('')}
+function custShow(id){const c=db.customers.find(x=>x.id===id);if(!c)return;idle();
+  $('cres').innerHTML=`<div class="panel"><div class="bar"><button class="ghost" onclick="$('p3').value='';onP3()">結束查詢</button></div><h2>${esc(maskN(c.name))}</h2>
+  <div class="note">資料已登記，不代表商品已完成分裝。實際取貨請洽店員。</div>
+  ${pend(c).map(i=>`<div class="item"><div><span class="nm">${esc(i.n)}</span>${locTag(i)}${tags(i)}<br><small>剩餘 ${rem(i)}（訂購 ${i.q}，已取 ${i.p}）${i.d?'　期限 '+esc(i.d):''}</small>${i.s?'<br><small style="color:var(--bad)">此商品目前缺貨，請洽店員。</small>':''}</div></div>`).join('')}</div>`}
+
+/* ---- 取貨登記（員工） ---- */
+function stfSearch(){const q=($('sq').value||'').trim().toLowerCase();pk=null;
+  if(!q){$('sres').innerHTML='<p class="hint">輸入姓名、電話（或末碼）、商品名稱來搜尋待取資料。</p>';return}
+  const l=db.customers.filter(c=>pend(c).length&&(c.name.toLowerCase().includes(q)||c.phone.includes(q)||c.items.some(i=>rem(i)>0&&i.n.toLowerCase().includes(q))));
+  $('sres').innerHTML=l.length?l.slice(0,30).map(c=>`<button class="card" onclick="stfOpen('${c.id}')"><span><b>${esc(c.name)}</b>　${esc(c.phone)}</span><span>待取 ${pend(c).length} 項</span></button>`).join(''):'<p class="hint">查無符合的待取資料。</p>'}
+function stfOpen(id){pk={cid:id,stage:'edit',deltas:{},err:'',entries:[]};renderPick()}
+function pkCollect(){const c=db.customers.find(x=>x.id===pk.cid);if(!c)return;pend(c).forEach(i=>{const el=$('d'+i.id);if(el)pk.deltas[i.id]=el.value})}
+function pkVal(s){s=String(s??'').trim();return s===''?0:Number(s)}
+function renderPick(){const c=db.customers.find(x=>x.id===pk.cid);if(!c){$('sres').innerHTML='';return}
+  if(pk.stage==='confirm'){
+    $('sres').innerHTML=`<div class="panel"><h2>確認本次交付</h2><small>${esc(c.name)}　${esc(c.phone)}</small>
+    <div class="tw"><table style="min-width:520px"><thead><tr><th>商品</th><th>原訂</th><th>已取</th><th>本次交付</th><th>交付後剩餘</th></tr></thead><tbody>${pk.entries.filter(e=>e.delta>0).map(e=>{const i=c.items.find(x=>x.id===e.itemId);return `<tr><td>${esc(i.n)}${i.b?`<span class="bt">${esc(i.b)}</span>`:''}</td><td>${i.q}</td><td>${i.p}</td><td><b>${e.delta}</b></td><td>${rem(i)-e.delta}</td></tr>`}).join('')}</tbody></table></div>
+    <div class="bar"><button class="ghost" onclick="pk.stage='edit';renderPick()">返回修改</button><button class="pri" id="subbtn" onclick="pkSubmit()">確認提交</button></div><small>提交只代表已交付商品，不記錄付款。</small></div>`;return}
+  const ps=pend(c);
+  $('sres').innerHTML=`<div class="panel"><div class="bar"><button class="ghost" onclick="stfSearch()">← 返回搜尋</button></div><h2>${esc(c.name)}</h2><small>${esc(c.phone)}　新舊檔期的待取商品已合併</small>
+  ${pk.err?`<div class="err">${esc(pk.err)}</div>`:''}
+  ${ps.map(i=>`<div class="item"><div><span class="nm">${esc(i.n)}</span>${locTag(i)}${tags(i)}<br><small>訂購 ${i.q}，已取 ${i.p}，剩餘 ${rem(i)}${i.d?'，期限 '+esc(i.d):''}</small>${i.nt?`<br><small>備註：${esc(i.nt)}</small>`:''}</div>
+   <div><label for="d${i.id}" style="margin:0;font-weight:400"><small>本次交付</small></label><input id="d${i.id}" type="number" step="1" min="0" max="${rem(i)}" inputmode="numeric" value="${esc(pk.deltas[i.id]??0)}"><br><button class="ghost" onclick="pkAll('${i.id}')">全取</button> <button class="ghost ${i.s?'warnb':''}" onclick="pkShort('${i.id}')">${i.s?'解除缺貨':'標記缺貨'}</button></div></div>`).join('')}
+  <div class="bar"><button class="pri" onclick="pkReview()">檢視確認</button><small>交付數量預設為 0，請輸入顧客實際拿走的數量。</small></div></div>`}
+function pkAll(id){pkCollect();const c=db.customers.find(x=>x.id===pk.cid),i=c.items.find(x=>x.id===id);pk.deltas[id]=rem(i);renderPick()}
+function pkShort(id){pkCollect();const c=db.customers.find(x=>x.id===pk.cid),i=c.items.find(x=>x.id===id);i.s=!i.s;log(i.s?'標記缺貨':'解除缺貨',c.name+' '+i.n);save();renderPick()}
+function pkReview(){pkCollect();const c=db.customers.find(x=>x.id===pk.cid);const entries=[];
+  for(const i of pend(c)){const v=pkVal(pk.deltas[i.id]);
+    if(!Number.isInteger(v)||v<0){pk.err=i.n+'：交付數量必須是 0 以上的整數';renderPick();return}
+    if(v>rem(i)){pk.err=i.n+'：超過剩餘量 '+rem(i);renderPick();return}
+    entries.push({itemId:i.id,delta:v})}
+  if(!entries.some(e=>e.delta>0)){pk.err='本次交付數量都是 0';renderPick();return}
+  pk.err='';pk.entries=entries;pk.stage='confirm';renderPick()}
+function pkSubmit(){if(busy)return;busy=true;const b=$('subbtn');if(b)b.disabled=true;
+  const c=db.customers.find(x=>x.id===pk.cid);const got=pk.entries.filter(e=>e.delta>0).map(e=>c.items.find(i=>i.id===e.itemId).n+'×'+e.delta);
+  const r=submitPick(db,pk.entries,Date.now(),who);busy=false;
+  if(!r.ok){pk.stage='edit';pk.err=r.err;renderPick();return}
+  log('取貨登記',c.name+'：'+got.join('、'));save();const left=pend(c);pk=null;
+  $('sres').innerHTML=`<div class="ok"><b>${esc(c.name)}　本次交付已記錄</b><p>${esc(got.join('、'))}</p><p>${left.length?'尚有 '+left.length+' 項待取：'+left.map(i=>esc(i.n)+'×'+rem(i)+(i.s?'（缺貨）':'')).join('、'):'此顧客的商品已全部取完或取消。'}</p><button class="pri" onclick="$('sq').value='';stfSearch();$('sq').focus()">下一位</button></div>`}
+
+/* ---- 後台 ---- */
+function renderBack(){
+  const pc=db.customers.filter(c=>pend(c).length).length,od=allItems().filter(x=>overdue(x.i)).length,hs=allItems().filter(x=>rem(x.i)===0).length;
+  const tabs=[['imp','匯入名冊'],['pen','待取名單 ('+pc+')'],['ovd','逾時未取 ('+od+')'],['his','歷史 ('+hs+')'],['log','員工與異動紀錄'],['bak','備份還原']];
+  $('sub').innerHTML=tabs.map(t=>`<button class="${sub===t[0]&&!edId?'on':''}" onclick="sub='${t[0]}';armed=null;edId=null;renderBack()">${t[1]}</button>`).join('');
+  const b=$('bk');
+  if(edId){renderEdit();return}
+  if(sub==='imp')renderImp();
+  else if(sub==='pen'){const l=db.customers.filter(c=>pend(c).length).sort((a,c)=>a.name.localeCompare(c.name,'zh-Hant'));
+    b.innerHTML=bar('匯出取貨通知（新舊合併）','exp(\'pen\')','每位顧客的待取商品列在一起，含檔期、儲位、逾期與通知文字。')+custTable(l)}
+  else if(sub==='ovd'){const l=allItems().filter(x=>overdue(x.i)).sort((a,c)=>a.i.d.localeCompare(c.i.d));
+    b.innerHTML=bar('匯出逾時未取明細','exp(\'ovd\')','期限依台灣日期判斷。')+flatTable(l,['顧客','商品','檔期','剩餘','儲位','期限'],x=>[esc(x.c.name)+'<br><small>'+esc(x.c.phone)+'</small>',esc(x.i.n),esc(x.i.b),rem(x.i),esc(x.i.loc||'—'),esc(x.i.d)])}
+  else if(sub==='his'){const l=allItems().filter(x=>rem(x.i)===0).sort((a,c)=>doneAt(c.i)-doneAt(a.i));
+    b.innerHTML=bar('匯出歷史紀錄','exp(\'his\')','每項商品自匯入日起保留 30 天，已完成與未完成都一樣。')+flatTable(l,['完成/取消','顧客','商品','檔期','數量','狀態','保留至'],x=>[fmt(doneAt(x.i)),esc(x.c.name)+'<br><small>'+esc(x.c.phone)+'</small>',esc(x.i.n),esc(x.i.b),x.i.q+'（已取 '+x.i.p+'）',x.i.cancelledAt?'已取消':'已取完',dstr(x.i.at+KEEP)])}
+  else if(sub==='log')renderLog();
+  else renderBak();
+}
+const bar=(lbl,fn,note)=>`<div class="bar"><button class="pri" onclick="${fn}">${lbl}</button>${note?`<small>${note}</small>`:''}</div>`;
+function flatTable(l,heads,fn){if(!l.length)return '<p class="empty">目前沒有資料。</p>';
+  return '<div class="tw"><table><thead><tr>'+heads.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+l.map(x=>'<tr>'+fn(x).map(v=>'<td>'+v+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'}
+function custTable(l){if(!l.length)return '<p class="empty">目前沒有待取資料。</p>';
+  return '<div class="tw"><table><thead><tr><th>姓名</th><th>電話</th><th>待取商品與儲位</th><th></th></tr></thead><tbody>'+l.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.phone)}</td><td>${pend(c).map(i=>`<div>${esc(i.n)} ×${rem(i)}${locTag(i)}${tags(i)}${i.d?`<small>　期限 ${esc(i.d)}</small>`:''}<small>　保留至 ${dstr(i.at+KEEP)}</small></div>`).join('')}</td><td style="white-space:nowrap"><button class="ghost" onclick="openEd('${c.id}')">編輯</button> <button class="ghost ${armed===c.id?'warnb':''}" onclick="delCust('${c.id}')">${armed===c.id?'再按一次刪除':'刪除'}</button></td></tr>`).join('')+'</tbody></table></div>'}
+function delCust(id){if(armed!==id){armed=id;renderBack();return}armed=null;const dc=db.customers.find(c=>c.id===id);if(dc)log('刪除顧客',dc.name+' '+dc.phone+'（'+dc.items.length+' 項商品）');db.customers=db.customers.filter(c=>c.id!==id);purge(db);save();renderBack();toast('已刪除該顧客的所有資料')}
+function pickList(){const l=allItems().filter(x=>rem(x.i)>0);const bad=x=>!x.i.loc||!x.i.d;
+  return l.sort((a,c)=>(bad(c)-bad(a))||(a.i.loc||'').localeCompare(c.i.loc||'','zh-Hant',{numeric:true})||(a.i.d||'').localeCompare(c.i.d||'')||a.c.name.localeCompare(c.c.name,'zh-Hant'))}
+const normLoc=s=>S(s).normalize('NFKC').toUpperCase();
+/* ---- 儲位修改對話框（依「顧客＋溫域」分組） ---- */
+let dlgCfg=null,rq='',rb=false;
+function grpRows(list,keyOf,whoOf,zOf,nOf,qOf,locOf){const m=new Map();
+  list.forEach(x=>{const k=keyOf(x);let g=m.get(k);if(!g){g={k,who:whoOf(x),z:zOf(x)||'',names:[],q:0,locs:new Set(),xs:[]};m.set(k,g)}g.names.push(nOf(x));g.q+=qOf(x);g.locs.add(locOf(x)||'');g.xs.push(x)});
+  return [...m.values()].map(g=>({k:g.k,who:g.who,z:g.z,n:g.names.slice(0,2).join('、')+(g.names.length>2?'…等 '+g.names.length+' 項':''),cnt:g.names.length,q:g.q,loc:g.locs.size===1?[...g.locs][0]:'',xs:g.xs}))}
+function openLocDlg(c){c.only=false;c.q='';dlgCfg=c;renderDlg();$('dlg').showModal()}
+function dlgCollect(){dlgCfg.items.forEach((it,k)=>{const el=$('dl'+k);if(el)dlgCfg.vals[k]=el.value})}
+function renderDlg(){const c=dlgCfg,q=(c.q||'').toLowerCase();
+  let idx=c.items.map((_,k)=>k).filter(k=>(!c.only||!S(c.vals[k]))&&(!q||(c.items[k].who+' '+c.items[k].n+' '+c.items[k].z).toLowerCase().includes(q)));const total=idx.length;idx=idx.slice(0,300);
+  $('dlg').innerHTML=`<h2 style="margin:0 0 6px;font-size:20px">${esc(c.title)}</h2><small>${esc(c.hint)}</small>
+  <div class="bar"><input id="dq" class="pin" style="width:220px;letter-spacing:0;font-size:16px" placeholder="搜尋姓名、商品、溫域" value="${esc(c.q||'')}" onchange="dlgCollect();dlgCfg.q=this.value;renderDlg()"><label style="margin:0;font-weight:400"><input type="checkbox" ${c.only?'checked':''} onchange="dlgCollect();dlgCfg.only=this.checked;renderDlg()"> 只看空白儲位（共 ${c.items.filter((_,k)=>!S(c.vals[k])).length} 組）</label></div>
+  <div class="tw" style="max-height:50vh;overflow:auto"><table style="min-width:560px"><thead><tr><th>顧客</th><th>溫域</th><th>商品</th><th>數量</th><th>儲位</th></tr></thead><tbody>${idx.map(k=>{const it=c.items[k];return `<tr><td>${esc(it.who)}</td><td>${esc(it.z||'—')}</td><td>${esc(it.n)}</td><td>${it.q}</td><td><input id="dl${k}" maxlength="20" aria-label="儲位" placeholder="例：A99、冰B90、冷藏33" value="${esc(c.vals[k])}"></td></tr>`}).join('')||'<tr><td colspan="5">沒有符合的項目</td></tr>'}</tbody></table></div>
+  ${total>300?`<small>畫面只顯示前 300 組（共 ${total} 組），其餘請用搜尋；已輸入的內容不會遺失。</small>`:''}
+  <div class="bar"><button class="pri" onclick="dlgSave()">儲存</button><button class="ghost" onclick="$('dlg').close()">取消</button></div>`}
+function dlgSave(){dlgCollect();const ch=[];dlgCfg.items.forEach((it,k)=>{const v=normLoc(dlgCfg.vals[k]);if(v!==it.loc)ch.push({g:it,loc:v})});dlgCfg.onSave(ch);$('dlg').close()}
+const whoTxt=(name,phone)=>name+'（'+phone.slice(-3)+'）';
+function impLoc(){const gs=grpRows(imp.a.rows,r=>r.name+'|'+r.phone+'|'+r.z,r=>whoTxt(r.name,r.phone),r=>r.z,r=>r.n,r=>r.q,r=>r.loc);
+  openLocDlg({title:'修改儲位（匯入前）',hint:'同一位顧客、同一溫域的商品共用一個儲位，例如 A99、冰B90、冷藏33。按「儲存」後，再回到預覽按「確認匯入」。',items:gs,vals:gs.map(g=>g.loc),onSave:impLocSave})}
+function impLocSave(ch){let n=0;ch.forEach(({g,loc})=>g.xs.forEach(r=>{if(r.loc0===undefined)r.loc0=r.loc;r.loc=loc;n++}));
+  imp.a.warnings=imp.a.warnings.filter(w=>w.msg!=='沒有儲位');imp.a.rows.forEach(r=>{if(!r.loc)imp.a.warnings.push({row:r.row,msg:'沒有儲位'})});
+  toast(ch.length?'已儲存 '+ch.length+' 組儲位（'+n+' 項商品），可以按「確認匯入」':'儲位沒有變動');renderPreview()}
+function rosterLoc(){const gs=grpRows(pickList(),x=>x.c.id+'|'+x.i.z,x=>whoTxt(x.c.name,x.c.phone),x=>x.i.z,x=>x.i.n,x=>rem(x.i),x=>x.i.loc);
+  openLocDlg({title:'修改待取商品儲位',hint:'同一位顧客、同一溫域的待取商品共用一個儲位，例如 A99、冰B90、冷藏33。按「儲存」後立即生效。',items:gs,vals:gs.map(g=>g.loc),
+    onSave:ch=>{let n=0;ch.forEach(({g,loc})=>{log('修改儲位',g.who+(g.z?' '+g.z:'')+'（'+g.cnt+' 項）：儲位 '+(g.loc||'空白或不一致')+' → '+(loc||'空白'));g.xs.forEach(x=>{x.i.loc=loc;n++})});save();toast(ch.length?'已儲存 '+ch.length+' 組儲位（'+n+' 項商品）':'儲位沒有變動');renderBack()}})}
+/* ---- 目前待取商品名冊 ---- */
+function pickList(){const l=allItems().filter(x=>rem(x.i)>0);const bad=x=>!x.i.loc||!x.i.d;
+  return l.sort((a,c)=>(bad(c)-bad(a))||(a.i.loc||'').localeCompare(c.i.loc||'','zh-Hant',{numeric:true})||(a.i.d||'').localeCompare(c.i.d||'')||a.c.name.localeCompare(c.c.name,'zh-Hant'))}
+function renderRoster(){const box=$('roster');if(!box)return;const l=pickList(),blank=l.filter(x=>!x.i.loc).length;
+  box.innerHTML=`<div class="panel"><h2>目前待取商品名冊</h2><small>共 ${l.length} 項待取商品，其中 ${blank} 項缺儲位。缺儲位或缺期限的排在最前面，再依儲位、期限、顧客排序。</small>
+  <div class="bar"><input id="rsq" class="pin" style="width:230px;letter-spacing:0;font-size:16px" placeholder="搜尋姓名、電話、商品、儲位" value="${esc(rq)}" oninput="rq=this.value;rosterTbl()"><label style="margin:0;font-weight:400"><input type="checkbox" ${rb?'checked':''} onchange="rb=this.checked;rosterTbl()"> 只看缺儲位</label><button class="ghost" onclick="rosterLoc()">修改儲位…</button><button class="ghost" onclick="exp('pik')">匯出名冊</button></div><div id="rt"></div></div>`;rosterTbl()}
+function rosterTbl(){const q=rq.trim().toLowerCase();let l=pickList().filter(x=>(!rb||!x.i.loc)&&(!q||[x.c.name,x.c.phone,x.i.n,x.i.loc].some(s=>String(s).toLowerCase().includes(q))));const n=l.length;l=l.slice(0,2000);
+  $('rt').innerHTML=flatTable(l,['儲位','商品','溫域','剩餘','顧客','檔期','期限','狀態',''],x=>[x.i.loc?esc(x.i.loc):'<span class="badge bad">缺儲位</span>',esc(x.i.n),esc(x.i.z||'—'),rem(x.i),esc(x.c.name)+'<br><small>'+esc(x.c.phone)+'</small>',esc(x.i.b),esc(x.i.d||'—'),(overdue(x.i)?'<span class="badge bad">逾期</span>':'')+(x.i.s?'<span class="badge sht">缺貨</span>':''),`<button class="ghost" onclick="openEd('${x.c.id}')">編輯</button>`])+(n>2000?`<small>僅顯示前 2000 項，共 ${n} 項，請用搜尋縮小範圍。</small>`:'')}
+
+/* ---- 匯入 ---- */
+function renderImp(){$('bk').innerHTML=`<div class="panel"><h2>匯入團購名冊</h2>
+  <p>支援 <code>.xlsx</code>（讀第一個工作表）、CSV，或從 Excel 複製貼上。可直接匯入「合併提貨總表」：自動略過分頁重複的標題列，補齊合併儲存格的手機，並把「取貨時間」（如 10/24~11/01）換成取貨期限；一份檔案含多家分店時，需選擇本店。</p>
+  <label class="fld">本次檔期名稱（選填，檔名有年月時會自動帶入）<input id="bn" placeholder="例：11月第2檔" maxlength="30"></label>
+  <div class="bar"><input type="file" id="fi" accept=".xlsx,.xls,.csv,.txt,.tsv" onchange="readFile(this)"></div>
+  <label for="paste">或貼上名冊內容</label><textarea id="paste" placeholder="姓名	電話	商品	數量	儲位	期限"></textarea>
+  <div class="bar"><button class="pri" onclick="previewPaste()">解析預覽</button></div></div><div id="imp"></div><div id="roster"></div>`;renderPreview();renderRoster()}
+function parseText(t,d){const rows=[];let r=[],c='',q=false;
+  for(let i=0;i<t.length;i++){const ch=t[i];
+    if(q){if(ch==='"'){if(t[i+1]==='"'){c+='"';i++}else q=false}else c+=ch}
+    else if(ch==='"')q=true;else if(ch===d){r.push(c);c=''}
+    else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;r.push(c);c='';rows.push(r);r=[]}else c+=ch}
+  if(c||r.length){r.push(c);rows.push(r)}return rows}
+function gridFromText(t){t=t.replace(/^\uFEFF/,'');const d=(t.split('\n')[0]||'').includes('\t')?'\t':',';return parseText(t,d)}
+function readFile(inp){const f=inp.files[0];if(!f)return;const name=f.name,per=($('bn').value||'').trim();
+  if(/\.xlsx?$/i.test(name)){
+    if(typeof XLSX==='undefined'){toast('Excel 元件載入失敗，請改用 CSV 或貼上');return}
+    const r=new FileReader();r.onload=()=>{try{const wb=XLSX.read(r.result,{type:'array'});const ws=wb.Sheets[wb.SheetNames[0]];const rg=XLSX.utils.decode_range(ws['!ref']||'A1');
+      const grid=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''});
+      const merges=(ws['!merges']||[]).map(m=>({r1:m.s.r-rg.s.r,r2:m.e.r-rg.s.r,c1:m.s.c-rg.s.c,c2:m.e.c-rg.s.c}));
+      makePreview(grid,merges,rg.s.r,name,per)}catch(e){toast('無法讀取這個 Excel 檔')}};r.readAsArrayBuffer(f)}
+  else{const r=new FileReader();r.onload=()=>makePreview(gridFromText(r.result),[],0,name,per);r.readAsText(f,'utf-8')}}
+function previewPaste(){const t=$('paste').value;if(!t.trim()){toast('請先選擇檔案或貼上名冊');return}makePreview(gridFromText(t),[],0,'貼上內容',($('bn').value||'').trim())}
+const guessYear=fn=>{const m=/(20\d{2})(0[1-9]|1[0-2])/.exec(fn||'');return m?+m[1]:undefined};
+const guessPeriod=fn=>{const m=/(20\d{2})(0[1-9]|1[0-2])/.exec(fn||'');return m?m[1]+'年'+(+m[2])+'月':''};
+function makePreview(grid,merges,off,fileName,period){
+  imp={grid,merges,off,fileName,period:period||guessPeriod(fileName),year:guessYear(fileName),store:'',keep:new Set(),a:null};
+  const a0=analyze(grid,merges,off,{year:imp.year});imp.stores=a0.stores;
+  if(a0.needStore){const pre=db.cfg&&db.cfg.store;if(pre&&imp.stores[pre])imp.store=pre;else{renderPreview();return}}
+  runAnalyze()}
+function runAnalyze(){imp.a=analyze(imp.grid,imp.merges,imp.off,{store:imp.store||undefined,year:imp.year});
+  imp.fp=fingerprint(imp.a.rows,imp.period);imp.same=db.batches.find(b=>b.fp===imp.fp);imp.dups=findDups(db,imp.a.rows,imp.period);imp.keep=new Set();renderPreview()}
+function pickStore(v){imp.store=v;if(!v){imp.a=null;renderPreview();return}runAnalyze()}
+function renderPreview(){const box=$('imp');if(!box)return;if(!imp){box.innerHTML='';return}
+  const snames=Object.keys(imp.stores||{}).filter(k=>k).sort((x,y)=>x.localeCompare(y,'zh-Hant'));
+  const sel=snames.length>1?`<div class="panel"><label for="stsel">這份檔案包含 ${snames.length} 家分店的資料，請選擇本店</label><select id="stsel" onchange="pickStore(this.value)"><option value="">請選擇…</option>${snames.map(k=>`<option value="${esc(k)}" ${k===imp.store?'selected':''}>${esc(k)}（${imp.stores[k]} 列）</option>`).join('')}</select><div><small>只會匯入選到的分店，其他分店的資料不會寫入；選擇會被記住，下次自動套用。</small></div></div>`:'';
+  if(!imp.a){box.innerHTML=sel;return}
+  const {a,same,dups}=imp;const wc={};a.warnings.forEach(w=>{(wc[w.msg]=wc[w.msg]||[]).push(w.row)});
+  const dk=new Set(dups.map(r=>r.row));const willAdd=a.rows.filter(r=>!dk.has(r.row)||imp.keep.has(r.row));
+  const names=new Set(a.rows.map(r=>r.name+'|'+r.phone)),merged=[...names].filter(k=>{const [n,p]=k.split('|');return findCust(db,n,p)}).length;
+  box.innerHTML=sel+`<div class="panel"><h2>匯入預覽</h2><small>${esc(imp.fileName)}　${a.store?'分店：'+esc(a.store)+'　':''}檔期：${esc(imp.period||'（未填）')}</small>
+  <p><small>已略過 ${a.skipped.title+a.skipped.head} 列標題與分頁表頭${a.skipped.other?'、'+a.skipped.other+' 列其他分店資料':''}。</small></p>
+  <p>可匯入 <b>${a.rows.length}</b> 列商品，涉及 ${names.size} 位顧客，其中 ${merged} 位已有資料，將合併；錯誤 <b>${a.errors.length}</b> 列。</p>
+  ${same?`<div class="err">這份內容與檔期已在 ${fmt(same.at)} 匯入過，不能重複匯入。</div>`:''}
+  ${a.errors.length?`<div class="err"><b>有錯誤，整批不會寫入。請修正來源檔後重新匯入：</b><ul class="cl">${a.errors.slice(0,30).map(e=>`<li>${e.row?'第 '+e.row+' 列：':''}${esc(e.msg)}</li>`).join('')}${a.errors.length>30?`<li>…另有 ${a.errors.length-30} 項</li>`:''}</ul></div>`:''}
+  ${Object.keys(wc).length?`<div class="note"><b>提醒（不影響匯入）：</b><ul class="cl">${Object.entries(wc).map(([m,r])=>`<li>${esc(m)}：${r.length} 列（第 ${r.slice(0,8).join('、')}${r.length>8?' …':''} 列）</li>`).join('')}</ul></div>`:''}
+  ${dups.length?`<div class="note"><b>疑似重複 ${dups.length} 列</b>（同顧客、商品、數量、檔期、期限已存在），預設不匯入，需要的請勾選：<ul class="cl" style="list-style:none;padding:0">${dups.map(r=>`<li><label style="font-weight:400"><input type="checkbox" ${imp.keep.has(r.row)?'checked':''} onchange="dupTog(${r.row},this.checked)"> 第 ${r.row} 列　${esc(r.name)}　${esc(r.n)} ×${r.q}</label></li>`).join('')}</ul></div>`:''}
+  ${a.rows.length?`<div class="bar"><button class="ghost" onclick="impLoc()">修改儲位…（已填 ${a.rows.filter(r=>r.loc).length}/${a.rows.length}）</button><small>儲位依「顧客＋溫域」一組一格填寫，按儲存後再確認匯入。</small></div><div class="tw"><table style="min-width:560px"><thead><tr><th>列</th><th>姓名</th><th>電話</th><th>商品</th><th>溫域</th><th>數量</th><th>儲位</th><th>期限</th></tr></thead><tbody>${a.rows.slice(0,5).map(r=>`<tr><td>${r.row}</td><td>${esc(r.name)}</td><td>${esc(r.phone)}</td><td>${esc(r.n)}</td><td>${esc(r.z||'—')}</td><td>${r.q}</td><td>${r.loc?esc(r.loc):'<span class="badge bad">缺儲位</span>'}</td><td>${esc(r.d||'—')}</td></tr>`).join('')}</tbody></table></div><small>僅顯示前 5 列</small>`:''}
+  <div class="bar"><button class="pri" ${a.errors.length||same||!willAdd.length?'disabled':''} onclick="doImport()">確認匯入 ${willAdd.length} 列</button><button class="ghost" onclick="imp=null;renderPreview()">取消</button></div></div>`}
+function dupTog(row,on){on?imp.keep.add(row):imp.keep.delete(row);renderPreview()}
+function doImport(){if(!imp||!imp.a||imp.a.errors.length||imp.same)return;const dk=new Set(imp.dups.map(r=>r.row));
+  const rows=imp.a.rows.filter(r=>!dk.has(r.row)||imp.keep.has(r.row));if(!rows.length)return;
+  const nk=new Set(rows.map(x=>x.name+'|'+x.phone)),mg=[...nk].filter(k=>{const [a,b]=k.split('|');return findCust(db,a,b)}).length;
+  commitRows(db,rows,{period:imp.period,fileName:imp.fileName,fp:imp.fp});
+  if(imp.store)db.cfg.store=imp.store;
+  const fg=new Map();rows.forEach(x=>{if(x.loc0!==undefined&&x.loc!==x.loc0){const k=x.name+'|'+x.phone+'|'+x.z;const g=fg.get(k)||{x,n:0};g.n++;fg.set(k,g)}});
+  log('匯入名冊','「'+imp.fileName+'」'+(imp.store?'分店「'+imp.store+'」':'')+'檔期「'+(imp.period||'未填')+'」：'+rows.length+' 列商品、'+nk.size+' 位顧客（合併到舊資料 '+mg+' 位）'+(fg.size?'；匯入前補填或修改儲位 '+fg.size+' 組':''));
+  [...fg.values()].slice(0,200).forEach(({x,n})=>log('匯入前填儲位',whoTxt(x.name,x.phone)+(x.z?' '+x.z:'')+'（'+n+' 項）：'+(x.loc0||'空白')+' → '+(x.loc||'空白')));
+  if(fg.size>200)log('匯入前填儲位','另有 '+(fg.size-200)+' 組未逐筆列出');
+  save();toast('已匯入 '+rows.length+' 列商品');imp=null;sub='pen';renderBack()}
+
+/* ---- 編輯顧客明細 ---- */
+function openEd(id){const c=db.customers.find(x=>x.id===id);if(!c)return;ed=JSON.parse(JSON.stringify(c));edId=id;renderBack()}
+function edCollect(){ed.name=$('nm').value.trim();ed.phone=normPhone($('ph').value);
+  ed.items.forEach((i,k)=>{i.b=$('ib'+k).value.trim();i.n=$('in'+k).value.trim();i.q=Number($('iq'+k).value);i.p=Number($('ip'+k).value);i.d=toDate($('id'+k).value)||'';i.s=$('is'+k).checked;
+    const x=$('ix'+k).checked;if(x&&!i.cancelledAt)i.cancelledAt=Date.now();if(!x)i.cancelledAt=null;i.loc=normLoc($('il'+k).value)})}
+function renderEdit(){const orig=db.customers.find(x=>x.id===edId);
+  $('bk').innerHTML=`<div class="panel"><div class="bar"><button class="ghost" onclick="edId=null;renderBack()">← 返回不儲存</button></div><h2>調整取貨明細</h2>
+  <small>已完成、已取消的商品在保留期內也能調整。儲位可直接修改，例如 A99、冰B90、冷藏33。</small>
+  <div style="margin-top:10px"><label class="fld">姓名<input id="nm" value="${esc(ed.name)}"></label><label class="fld">電話<input id="ph" inputmode="numeric" value="${esc(ed.phone)}"></label></div>
+  <div class="tw"><table style="min-width:980px"><thead><tr><th>檔期</th><th>商品</th><th>訂購</th><th>已取</th><th>儲位</th><th>期限</th><th>缺貨</th><th>取消</th><th>保留至</th><th></th></tr></thead><tbody>${ed.items.map((i,k)=>`<tr><td><input id="ib${k}" aria-label="檔期" value="${esc(i.b)}"></td><td><input id="in${k}" aria-label="商品" value="${esc(i.n)}"></td><td><input id="iq${k}" type="number" step="1" min="0" aria-label="訂購數" value="${i.q}"></td><td><input id="ip${k}" type="number" step="1" min="0" aria-label="已取數" value="${i.p}"></td><td><input id="il${k}" aria-label="儲位" value="${esc(i.loc)}"></td><td><input id="id${k}" aria-label="期限" placeholder="YYYY-MM-DD" value="${esc(i.d)}"></td><td><input id="is${k}" type="checkbox" aria-label="缺貨" ${i.s?'checked':''}></td><td><input id="ix${k}" type="checkbox" aria-label="取消" ${i.cancelledAt?'checked':''}></td><td>${dstr(i.at+KEEP)}</td><td style="white-space:nowrap"><button class="ghost" onclick="edFull(${k})">全部已取</button> <button class="ghost" onclick="edRm(${k})">移除</button></td></tr>`).join('')}</tbody></table></div>
+  <div class="bar"><button class="ghost" onclick="edAdd()">＋ 新增商品</button><button class="pri" onclick="edSave()">儲存調整</button></div>
+  <h3>給顧客的取貨通知</h3><textarea readonly id="nt">${esc(notice(ed))}</textarea>
+  <div class="bar"><button class="ghost" onclick="edCollect();renderEdit()">更新通知文字</button><button class="ghost" onclick="expOne()">匯出此顧客通知 CSV</button></div></div>`}
+function edFull(k){edCollect();ed.items[k].p=ed.items[k].q;ed.items[k].cancelledAt=null;renderEdit()}
+function edRm(k){edCollect();ed.items.splice(k,1);renderEdit()}
+function edAdd(){edCollect();ed.items.push({id:uid(),bid:'manual',n:'',q:1,p:0,loc:'',b:'',d:'',s:false,cancelledAt:null,at:Date.now(),_new:true});renderEdit()}
+function edSave(){edCollect();ed.items=ed.items.filter(i=>i.n);
+  if(!ed.name||ed.phone.length<8||ed.phone.length>10){toast('姓名必填，電話需為 8–10 碼');return}
+  if(!ed.items.length){toast('至少要有一項商品；要移除整位顧客請回列表按「刪除」');return}
+  for(const i of ed.items){if(!Number.isInteger(i.q)||i.q<0||!Number.isInteger(i.p)||i.p<0||i.p>i.q){toast(i.n+'：訂購數與已取數必須是整數，且已取數不能大於訂購數');return}}
+  const dup=db.customers.find(c=>c.id!==edId&&c.name===ed.name&&c.phone===ed.phone);if(dup){toast('已有另一位姓名與電話相同的顧客，請從該筆編輯');return}
+  const k=db.customers.findIndex(c=>c.id===edId),om=new Map(db.customers[k].items.map(i=>[i.id,i])),now=Date.now();
+  ed.items.forEach(i=>{const o=om.get(i.id);delete i._new;if(!o)return;
+    if(i.p!==o.p)db.events.push({id:uid(),itemId:i.id,prev:o.p,delta:i.p-o.p,next:i.p,at:now,who,kind:'correct'});
+    if(!!i.cancelledAt!==!!o.cancelledAt)db.events.push({id:uid(),itemId:i.id,prev:o.p,delta:0,next:i.p,at:now,who,kind:i.cancelledAt?'cancel':'restore'})});
+  auditEdit(db.customers[k],ed);db.customers[k]=ed;purge(db);save();edId=null;toast('已儲存調整');renderBack()}
+
+/* ---- 員工代號與異動紀錄 ---- */
+const normCode=s=>S(s).normalize('NFKC').toUpperCase();
+function log(action,detail){db.audit.push({id:uid(),at:Date.now(),who:who||'—',action,detail})}
+function renderWho(){const w=$('who');if(!w)return;w.innerHTML=who&&!lock.locked?`員工 ${esc(who)} <button class="lk" onclick="logout()">登出</button>`:''}
+function logout(){who=null;go('cust')}
+function askStaff(m){const b=$('lockbox');b.hidden=false;const first=!db.staff.length;
+  b.innerHTML=`<div class="panel"><label for="sc">${first?'尚未建立員工名單：輸入的代號會建立為第一位員工':'請輸入員工代號'}</label><div class="bar"><input id="sc" class="pin" style="letter-spacing:.1em;width:200px" maxlength="12" autocomplete="off" onkeydown="if(event.key==='Enter')staffOk('${m}')"><button class="pri" onclick="staffOk('${m}')">登入</button><button class="ghost" onclick="$('lockbox').hidden=true">取消</button></div><small>登入後，取貨登記、匯入、儲位修改與明細調整都會記錄是哪位員工操作。員工代號只用來記錄，不是密碼。</small></div>`;$('sc').focus()}
+function staffOk(m){const c=normCode($('sc').value);if(!/^[A-Z0-9_-]{1,12}$/.test(c)){toast('代號請輸入 1–12 碼的英數字');return}
+  if(!db.staff.length){db.staff.push({code:c,name:''});who=c;log('建立員工','第一位員工 '+c);save()}
+  else if(!db.staff.some(s=>s.code===c)){toast('查無此員工代號');return}else who=c;
+  go(m)}
+function staffAdd(){const c=normCode($('sn').value),nm=S($('sm').value);if(!/^[A-Z0-9_-]{1,12}$/.test(c)){toast('代號請輸入 1–12 碼的英數字');return}
+  if(db.staff.some(s=>s.code===c)){toast('這個代號已存在');return}
+  db.staff.push({code:c,name:nm});log('新增員工',c+(nm?'（'+nm+'）':''));save();renderBack()}
+function staffDel(c){if(c===who){toast('不能移除目前登入的代號');return}if(db.staff.length<=1){toast('至少要保留一位員工');return}
+  if(armed!=='s'+c){armed='s'+c;renderBack();return}armed=null;db.staff=db.staff.filter(s=>s.code!==c);log('移除員工',c);save();renderBack()}
+let lq='',lw='';
+function renderLog(){const whos=[...new Set([...db.staff.map(s=>s.code),...db.audit.map(a=>a.who)])];
+  $('bk').innerHTML=`<div class="panel"><h2>員工代號</h2><small>已建立 ${db.staff.length} 位。進入取貨登記與後台時，必須輸入名單內的代號。</small>
+  <div class="bar"><label class="fld" style="margin:0">代號<input id="sn" maxlength="12" style="width:130px"></label><label class="fld" style="margin:0">姓名（選填）<input id="sm" maxlength="20" style="width:150px"></label><button class="ghost" onclick="staffAdd()">新增員工</button></div>
+  ${db.staff.length?`<div class="tw"><table style="min-width:360px"><thead><tr><th>代號</th><th>姓名</th><th></th></tr></thead><tbody>${db.staff.map(s=>`<tr><td>${esc(s.code)}${s.code===who?' <span class="badge">目前登入</span>':''}</td><td>${esc(s.name)}</td><td><button class="ghost ${armed==='s'+s.code?'warnb':''}" onclick="staffDel('${esc(s.code)}')">${armed==='s'+s.code?'再按一次移除':'移除'}</button></td></tr>`).join('')}</tbody></table></div>`:''}</div>
+  <div class="panel"><h2>異動紀錄</h2><small>保留 30 天，記錄匯入、儲位修改、明細調整、取貨登記、刪除、還原等操作。</small>
+  <div class="bar"><select id="lwho" aria-label="員工" onchange="lw=this.value;logTbl()"><option value="">全部員工</option>${whos.map(w=>`<option ${w===lw?'selected':''}>${esc(w)}</option>`).join('')}</select><input id="lsq" class="pin" style="width:230px;letter-spacing:0;font-size:16px" placeholder="搜尋動作或內容" value="${esc(lq)}" oninput="lq=this.value;logTbl()"><button class="ghost" onclick="exp('log')">匯出異動紀錄</button></div><div id="lt"></div></div>`;logTbl()}
+function logTbl(){const q=lq.trim().toLowerCase();let l=[...db.audit].filter(a=>(!lw||a.who===lw)&&(!q||(a.action+' '+a.detail).toLowerCase().includes(q))).sort((a,c)=>c.at-a.at);const n=l.length;l=l.slice(0,2000);
+  $('lt').innerHTML=flatTable(l,['時間','員工','動作','內容'],a=>[fmt(a.at),esc(a.who),esc(a.action),esc(a.detail)])+(n>2000?`<small>僅顯示最新 2000 筆，共 ${n} 筆；匯出的 CSV 是全部。</small>`:'')}
+function auditEdit(o,e){const loc=[],oth=[],tag=i=>e.name+' '+i.n;
+  if(o.name!==e.name||o.phone!==e.phone)oth.push('顧客資料 '+o.name+' '+o.phone+' → '+e.name+' '+e.phone);
+  const om=new Map(o.items.map(i=>[i.id,i]));
+  e.items.forEach(i=>{const x=om.get(i.id);if(!x){oth.push('新增商品 '+i.n+' ×'+i.q+(i.loc?'（儲位 '+i.loc+'）':''));return}
+    if(x.loc!==i.loc)loc.push(tag(i)+'：儲位 '+(x.loc||'空白')+' → '+(i.loc||'空白'));
+    const ch=[];if(x.n!==i.n)ch.push('商品名 '+x.n+' → '+i.n);if(x.b!==i.b)ch.push('檔期 '+(x.b||'空白')+' → '+(i.b||'空白'));if(x.q!==i.q)ch.push('訂購 '+x.q+' → '+i.q);if(x.p!==i.p)ch.push('已取 '+x.p+' → '+i.p);if(x.d!==i.d)ch.push('期限 '+(x.d||'空白')+' → '+(i.d||'空白'));if(!!x.s!==!!i.s)ch.push(i.s?'標記缺貨':'解除缺貨');if(!!x.cancelledAt!==!!i.cancelledAt)ch.push(i.cancelledAt?'取消':'恢復');
+    if(ch.length)oth.push(i.n+'：'+ch.join('，'))});
+  const ni=new Set(e.items.map(i=>i.id));o.items.forEach(i=>{if(!ni.has(i.id))oth.push('移除商品 '+i.n+' ×'+i.q)});
+  loc.forEach(t=>log('修改儲位',t));if(oth.length)log('調整明細',e.name+'：'+oth.join('；'))}
+
+/* ---- 備份還原 ---- */
+function renderBak(){$('bk').innerHTML=`<div class="panel"><h2>備份與還原</h2><div class="note">備份檔含姓名、電話與購買資料，請妥善保存，不要隨意傳送。資料只存在這台裝置的瀏覽器，請定期備份。</div>
+  <div class="bar"><button class="pri" onclick="exp('bak')">匯出完整備份（JSON）</button></div>
+  <h3>從備份還原</h3><div class="bar"><input type="file" id="rf" accept=".json" onchange="readBackup(this)"></div><div id="rsb"></div></div>`;renderRs()}
+function readBackup(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);
+  if(!Array.isArray(d.customers)||!d.customers.every(c=>c&&c.id&&c.name&&c.phone&&Array.isArray(c.items)&&c.items.every(i=>i&&i.id&&Number.isFinite(i.q)&&Number.isFinite(i.p)&&Number.isFinite(i.at))))throw 0;
+  rs={d:{customers:d.customers,events:Array.isArray(d.events)?d.events:[],batches:Array.isArray(d.batches)?d.batches:[],audit:Array.isArray(d.audit)?d.audit:[],staff:Array.isArray(d.staff)&&d.staff.length?d.staff:db.staff,cfg:d.cfg||db.cfg},name:f.name,armed:false};renderRs()}catch(e){rs=null;renderRs();toast('這不是有效的備份檔')}};r.readAsText(f,'utf-8')}
+function renderRs(){const b=$('rsb');if(!b)return;if(!rs){b.innerHTML='';return}
+  b.innerHTML=`<div class="err">還原會<b>取代這台裝置目前的全部資料</b>（現有 ${db.customers.length} 位顧客；備份「${esc(rs.name)}」有 ${rs.d.customers.length} 位）。已超過 30 天的商品還原後會立即清除。</div><div class="bar"><button class="pri" onclick="doRestore()">${rs.armed?'再按一次確認還原':'還原'}</button><button class="ghost" onclick="rs=null;renderRs()">取消</button></div>`}
+function doRestore(){if(!rs.armed){rs.armed=true;renderRs();return}db=rs.d;rs=null;purge(db);log('還原備份','以備份檔取代這台裝置的全部資料');save();toast('已還原');renderBack()}
+
+/* ---- 匯出 ---- */
+const csv=rows=>'\uFEFF'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');
+async function saveFile(name,data){let dl=null;try{dl=window.claude?await window.claude.use('downloads'):null}catch(e){}
+  if(!dl){toast('此環境無法下載檔案');return}
+  try{await dl.save({filename:name,data})}catch(e){if(!e||e.code!=='declined')toast('下載失敗，請再試一次')}}
+const NH=['姓名','電話','檔期','商品','溫域','未取數','儲位','取貨期限','狀態','通知文字'];
+const stat=i=>(overdue(i)?'已逾期':'可取貨')+(i.s?'・缺貨':'');
+function noticeRows(l){const rows=[];l.forEach(c=>pend(c).forEach((i,k)=>rows.push([c.name,c.phone,i.b,i.n,i.z,rem(i),i.loc,i.d,stat(i),k?'':notice(c)])));return rows}
+function expOne(){edCollect();const rows=noticeRows([ed]);if(!rows.length){toast('此顧客目前沒有待取商品');return}saveFile('取貨通知_'+ed.name+'_'+dstr()+'.csv',csv([NH,...rows]))}
+function exp(k){const d=dstr();let rows;
+  if(k==='bak')return saveFile('團購取貨備份_'+d+'.json',JSON.stringify({version:2,exportedAt:Date.now(),...db}));
+  if(k==='log'){const l=[...db.audit].sort((a,c)=>c.at-a.at);if(!l.length){toast('目前沒有異動紀錄');return}
+    return saveFile('異動紀錄_'+d+'.csv',csv([['時間','員工代號','動作','內容'],...l.map(a=>[new Date(a.at).toLocaleString('zh-TW',{hour12:false}),a.who,a.action,a.detail])]))}
+  if(k==='pen'){rows=noticeRows(db.customers.filter(c=>pend(c).length).sort((a,c)=>a.name.localeCompare(c.name,'zh-Hant')));if(!rows.length){toast('沒有可匯出的資料');return}return saveFile('取貨通知_新舊合併_'+d+'.csv',csv([NH,...rows]))}
+  if(k==='ovd'){const l=allItems().filter(x=>overdue(x.i));if(!l.length){toast('目前沒有逾時未取的商品');return}
+    return saveFile('逾時未取明細_'+d+'.csv',csv([['姓名','電話','檔期','商品','溫域','訂購數','已取數','未取數','儲位','取貨期限','缺貨'],...l.map(x=>[x.c.name,x.c.phone,x.i.b,x.i.n,x.i.z,x.i.q,x.i.p,rem(x.i),x.i.loc,x.i.d,x.i.s?'是':''])]))}
+  if(k==='pik'){const l=pickList();if(!l.length){toast('沒有待取商品');return}
+    return saveFile('待取商品名冊_'+d+'.csv',csv([['儲位','商品','溫域','剩餘','姓名','電話','檔期','取貨期限','狀態'],...l.map(x=>[x.i.loc,x.i.n,x.i.z,rem(x.i),x.c.name,x.c.phone,x.i.b,x.i.d,(!x.i.loc||!x.i.d?'資料待確認 ':'')+stat(x.i)])]))}
+  const l=allItems().filter(x=>rem(x.i)===0).sort((a,c)=>doneAt(c.i)-doneAt(a.i));if(!l.length){toast('沒有可匯出的歷史資料');return}
+  saveFile('取貨歷史_'+d+'.csv',csv([['姓名','電話','檔期','商品','數量','已取數','狀態','儲位','取貨期限','匯入日','保留至','完成/取消時間','取貨紀錄'],...l.map(x=>[x.c.name,x.c.phone,x.i.b,x.i.n,x.i.q,x.i.p,x.i.cancelledAt?'已取消':'已取完',x.i.loc,x.i.d,dstr(x.i.at),dstr(x.i.at+KEEP),new Date(doneAt(x.i)).toLocaleString('zh-TW',{hour12:false}),evTxt(x.i)])]))}
+
+load();
+['input','click','touchstart'].forEach(ev=>$('cust').addEventListener(ev,idle,{passive:true}));
+applyLock();
+</script>
+</body>
+</html>
